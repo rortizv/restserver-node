@@ -2,8 +2,10 @@ const { response } = require('express');
 
 
 const getUsers = (req, res = response) => {
+    const queryParams = req.query;
     res.status(200).json({
-        msg: 'GET - controller'
+        msg: 'GET - controller',
+        queryParams
     });
 }
 
@@ -16,14 +18,20 @@ const createUser = (req, res = response) => {
 }
 
 const updatePutUser = (req, res = response) => {
+    const id = req.params.id;
+    const body = req.body;
     res.status(400).json({
-        msg: 'PUT - controller'
+        msg: `Id to update: ${id}`,
+        body
     });
 }
 
 const updatePatchUser = (req, res = response) => {
+    const id = req.params.id;
+    const body = req.body;
     res.status(200).json({
-        msg: 'PATCH - controller'
+        msg: `Id to update: ${id}`,
+        body
     });
 }
 
