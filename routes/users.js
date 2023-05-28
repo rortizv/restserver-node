@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const Role = require('../models/role');
+const { isValidRole } = require('../helpers/db-validators');
 const { validateFields } = require('../middlewares/validate-fields');
 const { getUsers, 
         createUser, 
@@ -18,12 +18,7 @@ router.post('/', [
         check('email', 'Email is not valid').isEmail(),
         check('password', 'Password must be at least 6 characters').isLength({ min: 6 }).not(),
         check('password', 'Password is required').not().isEmpty(),
-        check('role').custom(async(role = '') => {
-                const existsRole = await Role.findOne({ role });
-                if (!existsRole) {
-                        throw new Error(`Role ${role} is not registered in the database`);
-                }
-        }),
+        check('role').custom(isValidRole),
         validateFields
 ], createUser);
 

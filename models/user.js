@@ -1,4 +1,7 @@
 const { Schema, model } = require('mongoose');
+const Role = require('./role');
+
+const role = new Role();
 
 const UserSchema = new Schema({
     name: {
@@ -21,7 +24,7 @@ const UserSchema = new Schema({
     role: {
         type: String,
         required: true,
-        enum: ['ADMIN_ROLE', 'USER_ROLE']
+        enum: role.name
     },
     state: {
         type: Boolean,
