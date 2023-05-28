@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { isValidRole } = require('../helpers/db-validators');
+
 const { validateFields } = require('../middlewares/validate-fields');
-const { getUsers, 
-        createUser, 
-        updatePutUser, 
-        updatePatchUser, 
+const { isValidRole, emailExists, idExists } = require('../helpers/db-validators');
+const { getUsers,
+        createUser,
+        updatePutUser,
+        updatePatchUser,
         deleteUser } = require('../controllers/users');
 
 const router = Router();
@@ -19,10 +20,16 @@ router.post('/', [
         check('password', 'Password must be at least 6 characters').isLength({ min: 6 }).not(),
         check('password', 'Password is required').not().isEmpty(),
         check('role').custom(isValidRole),
+        check('email').custom(emailExists),
         validateFields
 ], createUser);
 
-router.put('/:id', updatePutUser);
+router.put('/:id', [
+        check('id', 'Id is not valid').isMongoId(),
+        check('id').custom(idExists),
+        check('role').custom(isValidRole),
+        validateFields
+], updatePutUser);
 
 router.patch('/:id', updatePatchUser);
 

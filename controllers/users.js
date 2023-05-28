@@ -16,30 +16,35 @@ const createUser = async (req, res = response) => {
     
     const { name, email, password, role } = req.body;
     const user = new User({ name, email, password, role });
-    // Verify if email exists
-    const emailExists = await User.findOne({ email });
-    if (emailExists) {
-        return res.status(400).json({
-            msg: 'Email already exists'
-        });
-    }
+
     // Encrypt password
     const salt = bcryptjs.genSaltSync();
     user.password = bcryptjs.hashSync(password, salt);
+
     // Save user
     await user.save();
+
     res.status(201).json({
         msg: 'User created successfully',
         user
     });
 }
 
-const updatePutUser = (req, res = response) => {
-    const id = req.params.id;
-    const body = req.body;
+const updatePutUser = async(req, res = response) => {
+    const { id } = req.params;
+    const { _id, password, google, email, ...rest } = req.body;
+
+    if (password) {
+        // Encrypt password
+        const salt = bcryptjs.genSaltSync();
+        rest.password = bcryptjs.hashSync(password, salt);
+    }
+
+    const user = await User.findByIdAndUpdate(id, rest);
+
     res.status(400).json({
         msg: `Id to update: ${id}`,
-        body
+        user
     });
 }
 
