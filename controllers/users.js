@@ -4,11 +4,14 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 
 
-const getUsers = (req, res = response) => {
-    const queryParams = req.query;
+const getUsers = async(req, res = response) => {
+    const { limit = 15, from = 0 } = req.query;
+    const users = await User.find()
+        .skip(Number(from))
+        .limit(Number(limit));
+
     res.status(200).json({
-        msg: 'GET - controller',
-        queryParams
+        users
     });
 }
 
@@ -33,7 +36,7 @@ const createUser = async (req, res = response) => {
 const updatePutUser = async(req, res = response) => {
     const { id } = req.params;
     const { _id, password, google, email, ...rest } = req.body;
-
+    
     if (password) {
         // Encrypt password
         const salt = bcryptjs.genSaltSync();
@@ -43,8 +46,8 @@ const updatePutUser = async(req, res = response) => {
     const user = await User.findByIdAndUpdate(id, rest);
 
     res.status(400).json({
-        msg: `Id to update: ${id}`,
-        user
+        msg: `User ${email} was updated successfully`,
+        rest
     });
 }
 
