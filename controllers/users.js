@@ -53,7 +53,7 @@ const updatePutUser = async(req, res = response) => {
 
     res.status(200).json({
         msg: `User ${email} was updated successfully`,
-        rest
+        user
     });
 }
 
