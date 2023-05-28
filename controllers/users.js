@@ -51,7 +51,7 @@ const updatePutUser = async(req, res = response) => {
 
     const user = await User.findByIdAndUpdate(id, rest);
 
-    res.status(400).json({
+    res.status(200).json({
         msg: `User ${email} was updated successfully`,
         rest
     });
@@ -66,9 +66,16 @@ const updatePatchUser = (req, res = response) => {
     });
 }
 
-const deleteUser = (req, res = response) => {
+const deleteUser = async(req, res = response) => {
+    const { id } = req.params;
+    // Delete it physically
+    // const user = await User.findByIdAndDelete(id);
+
+    // Delete it logically
+    const user = await User.findByIdAndUpdate(id, { state: false });
+
     res.status(200).json({
-        msg: 'DELETE - controller'
+        msg: `User with id ${id} was deleted successfully`
     });
 }
 
