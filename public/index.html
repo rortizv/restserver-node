@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Sign in</title>
+    <title>Google Signin</title>
+
+
 </head>
 <body>
-    <h1>Google Sign in</h1>
-    <hr>
 
+    <h1>Google Signin</h1>
+    <hr>
+    
     <div id="g_id_onload"
-        data-client_id="246426062891-6fbj0cf5mfgff4v42jeq691l44ejhrf0.apps.googleusercontent.com"
+        data-client_id="1023916028923-mnn067lcjn3itrr0lo8oj1s07kddgrcj.apps.googleusercontent.com"
+        data-callback="handleCredentialResponse"
         data-auto_prompt="false"
-        data-callback="handleCredentialResponse">
+        data-auto_select="true">
     </div>
+
     <div class="g_id_signin"
         data-type="standard"
         data-size="large"
@@ -24,11 +28,45 @@
         data-logo_alignment="left">
     </div>
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <button id="g_id_signout">Sign Out</button>
+
     <script>
-        function handleCredentialResponse(response) {
-            console.log('id_token', response.credential);
-        }
+    function handleCredentialResponse(response) {
+
+        const body = { id_token: response.credential }
+        fetch('http://localhost:8000/api/auth/google', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+        .then( r=> r.json() )
+        .then( resp =>{
+            console.log(resp )
+            localStorage.setItem('email', resp.user.email )
+        })
+        .catch( console.warn )
+    }
+
+
+    const button = document.getElementById('g_id_signout');
+    button.onclick = async() => {
+
+        console.log(google.accounts.id)
+        google.accounts.id.disableAutoSelect()
+        google.accounts.id.revoke(localStorage.getItem('email'), done => {
+            console.log('consent revoked');
+            localStorage.clear()
+            location.reload()
+        });
+    }
+
+
     </script>
+
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
