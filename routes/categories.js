@@ -10,7 +10,7 @@ const {
     getCategories,
     getCategoryById,
     updateCategory, 
-    deleteCategory} = require('../controllers/categories');
+    deleteCategory } = require('../controllers/categories');
     
 const { categoryByIdExists } = require('../helpers/db-validators');
 

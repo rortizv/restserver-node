@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 
 const dbConnection = async () => {
     let uri = process.env.MONGODB_ATLAS_URI;
-    console.log(uri);
 
     try {
         await mongoose.connect(uri, {
@@ -16,6 +15,18 @@ const dbConnection = async () => {
 
 }
 
+const getDbCollections = async () => {
+    const collections = await mongoose.connection.db.listCollections().toArray();
+    const collectionNames = collections.map((collection) => {
+        return {
+            name: collection.name
+        };
+    });
+    return collectionNames;
+};
+
+
 module.exports = {
-    dbConnection
+    dbConnection,
+    getDbCollections
 }
