@@ -18,6 +18,9 @@ const ProductSchema = new Schema({
     description: {
         type: String
     },
+    image: {
+        type: String
+    },
     available: {
         type: Boolean,
         default: true
